@@ -1,0 +1,16 @@
+{
+  "name": "disgpt",
+  "version": "0.0.1",
+  "description": "A Chat GPT Discord bot",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "discord",
+    "chatgpt",
+    "bot"
+  ],
+  "author": "zzacal",
+  "license": "ISC"
+}
