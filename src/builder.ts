@@ -35,7 +35,7 @@ export class Builder {
      * Interactions endpoint URL where Discord will send HTTP requests
      */
     app.post("/interactions", async function (req, res) {
-      const result = await HandleDiscordRequest(chatService, req.body);
+      const result = await HandleDiscordRequest(chatService, APPID, DISCORD_BOT_TOKEN, req.body);
       if(result)
       {
         res.send(result);
