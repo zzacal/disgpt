@@ -2,12 +2,9 @@ import { InteractionResponseType, InteractionType } from "discord-interactions";
 import { ChatService } from "./chatgpt/chat-service";
 import { DiscordRequest, getRandomEmoji } from "./utils";
 
-export type Interaction = { type: InteractionType; id: string; token: string, data: any };
-export type InteractionResponse = { type: InteractionResponseType; data?: any };
-
 export async function HandleDiscordRequest(chat: ChatService, appId: string, botToken: string, interaction: Interaction): Promise<InteractionResponse | undefined> {
   // Interaction type and data
-  const { type, token, data } = interaction;
+  const { type, token, data, member: {user: {display_name, username}} } = interaction;
 
   /**
    * Handle verification requests
@@ -31,15 +28,20 @@ export async function HandleDiscordRequest(chat: ChatService, appId: string, bot
           },
         };
       case "askgpt":
-        chat.ask(data.options[0].value).then(answer => {
+        const question = data.options[0].value;
+        chat.ask(question).then(answer => {
+          let content = `**${question}**\n${answer}`;
+          if(content.length > 2000) {
+            content = content.substring(0,2000);
+          }
+
           DiscordRequest(
             `webhooks/${appId}/${token}`,
             botToken,
             {
               method: "POST",
               body: {
-                content: answer,
-                // type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                content
               },
             }
           );
@@ -54,3 +56,65 @@ export async function HandleDiscordRequest(chat: ChatService, appId: string, bot
     }
   }
 }
+
+export type Interaction = {
+  app_permissions: string
+  application_id: string
+  channel_id: string
+  data: Data
+  entitlement_sku_ids: any[]
+  entitlements: any[]
+  guild_id: string
+  guild_locale: string
+  id: string
+  locale: string
+  member: Member
+  token: string
+  type: number
+  version: number
+}
+
+export type Data = {
+  id: string
+  name: string
+  options: Option[]
+  type: number
+}
+
+export type Option = {
+  name: string
+  type: number
+  value: string
+}
+
+export type Member = {
+  avatar: any
+  communication_disabled_until: any
+  deaf: boolean
+  flags: number
+  is_pending: boolean
+  joined_at: string
+  mute: boolean
+  nick: any
+  pending: boolean
+  permissions: string
+  premium_since: any
+  roles: any[]
+  user: User
+}
+
+export type User = {
+  avatar: string
+  avatar_decoration: any
+  discriminator: string
+  display_name: any
+  global_name: any
+  id: string
+  public_flags: number
+  username: string
+}
+
+export type InteractionResponse = { 
+  type: InteractionResponseType; 
+  data?: any 
+};

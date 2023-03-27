@@ -23,7 +23,8 @@ export class Builder {
     // Create an express app
     const app = express();
 
-    await InstallGlobalCommands(APPID, DISCORD_BOT_TOKEN, ALL_COMMANDS);
+    // TODO: Find a better way to do this. Maybe and endpoint
+    // await InstallGlobalCommands(APPID, DISCORD_BOT_TOKEN, ALL_COMMANDS);
 
     // Parse request body and verifies incoming requests using discord-interactions package
     app.use(express.json({ verify: VerifyDiscordRequest(PUBLIC_KEY) }));
