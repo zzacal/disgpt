@@ -49,7 +49,7 @@ const CHALLENGE_COMMAND: Command = {
       name: 'question',
       description: 'Pick your object',
       required: true,
-      max_length: 20
+      max_length: 1000
     },
   ],
   type: 1,
