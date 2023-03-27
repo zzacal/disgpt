@@ -1,6 +1,9 @@
 # Disgpt
 A Chat GPT Discord bot
 
+## Invite disgpt to your discord server
+https://discord.com/api/oauth2/authorize?client_id=1089437295456829600&permissions=274877975552&scope=bot%20applications.commands
+
 ## Running locally
 
 ### Install
