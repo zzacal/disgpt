@@ -3,11 +3,6 @@ import { AIService } from "./ai/ai-service";
 import { HandleDiscordRequest, VerifyDiscordRequest } from "./discord";
 
 export class ExpressAppBuilder {
-  /**
-   *
-   */
-  constructor() {}
-
   public build = async (
     chatService: AIService,
     appId: string,
@@ -17,14 +12,8 @@ export class ExpressAppBuilder {
     // Create an express app
     const app = express();
 
-    // TODO: Find a better way to do this. Maybe and endpoint
-    // await InstallGlobalCommands(APPID, DISCORD_BOT_TOKEN, ALL_COMMANDS);
-
     // Parse request body and verifies incoming requests using discord-interactions package
     app.use(express.json({ verify: VerifyDiscordRequest(publicKey) }));
-
-    // Store for in-progress games. In production, you'd want to use a DB
-    const activeGames = {};
 
     /**
      * Interactions endpoint URL where Discord will send HTTP requests
@@ -37,7 +26,7 @@ export class ExpressAppBuilder {
       }
     });
 
-    app.get("/ping", (req, res) => {res.sendStatus(200)});
+    app.get("/ping", (_req, res) => {res.sendStatus(200)});
 
     return app;
   };

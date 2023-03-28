@@ -2,22 +2,21 @@ import 'dotenv/config';
 import { Request, Response } from "express";
 import { verifyKey } from 'discord-interactions';
 
-export const VerifyDiscordRequest = (clientKey: string) => (req: Request, res: Response, buf: Buffer, encoding: string) => {
+export const VerifyDiscordRequest = (clientKey: string) => (req: Request, res: Response, buf: Buffer) => {
     const signature = req.get('X-Signature-Ed25519');
     const timestamp = req.get('X-Signature-Timestamp');
-    if (!(signature 
-    && timestamp
+    if (!(signature != null
+    && timestamp != null
     && verifyKey(buf, signature, timestamp, clientKey))) {
       res.status(401).send('Bad request signature');
       throw new Error('Bad request signature');
     }
   };
 
-export async function DiscordRequest(endpoint: string, token: string, options: {method: string, body: any}) {
+export async function DiscordRequest(endpoint: string, token: string, options: {method: string, body?: object}) {
   // append endpoint to root API URL
   const url = 'https://discord.com/api/v10/' + endpoint;
-  // Stringify payloads
-  if (options.body) options.body = JSON.stringify(options.body);
+
   // Use node-fetch to make requests
   const res = await fetch(url, {
     headers: {
@@ -25,8 +24,10 @@ export async function DiscordRequest(endpoint: string, token: string, options: {
       'Content-Type': 'application/json; charset=UTF-8',
       'User-Agent': 'DiscordBot (https://github.com/zzacal/disgpt, 1.0.0)',
     },
-    ...options
+    method: options.method,
+    body: options.body != null ? JSON.stringify(options.body) : undefined
   });
+
   // throw API errors
   if (!res.ok) {
     const data = await res.json();

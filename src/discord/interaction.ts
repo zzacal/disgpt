@@ -5,8 +5,8 @@ export type Interaction = {
   application_id: string
   channel_id: string
   data: Data
-  entitlement_sku_ids: any[]
-  entitlements: any[]
+  entitlement_sku_ids: string[]
+  entitlements: unknown[]
   guild_id: string
   guild_locale: string
   id: string
@@ -31,27 +31,27 @@ export type Option = {
 }
 
 export type Member = {
-  avatar: any
-  communication_disabled_until: any
+  avatar: unknown
+  communication_disabled_until: unknown
   deaf: boolean
   flags: number
   is_pending: boolean
   joined_at: string
   mute: boolean
-  nick: any
+  nick: string
   pending: boolean
   permissions: string
-  premium_since: any
-  roles: any[]
+  premium_since: unknown
+  roles: unknown[]
   user: User
 }
 
 export type User = {
   avatar: string
-  avatar_decoration: any
+  avatar_decoration: unknown
   discriminator: string
-  display_name: any
-  global_name: any
+  display_name: string
+  global_name: string
   id: string
   public_flags: number
   username: string
@@ -59,5 +59,5 @@ export type User = {
 
 export type InteractionResponse = { 
   type: InteractionResponseType; 
-  data?: any 
+  data?: object 
 };

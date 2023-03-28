@@ -5,7 +5,7 @@ import { Interaction, InteractionResponse } from "./interaction";
 
 export async function HandleDiscordRequest(chat: AIService, appId: string, botToken: string, interaction: Interaction): Promise<InteractionResponse | undefined> {
   // Interaction type and data
-  const { type, token, data, member: {user: {display_name, username}} } = interaction;
+  const { type, token, data } = interaction;
 
   /**
    * Handle verification requests
@@ -29,9 +29,8 @@ export async function HandleDiscordRequest(chat: AIService, appId: string, botTo
           },
         };
       case "askgpt":
-        const question = data.options[0].value;
-        chat.ask(question).then(answer => {
-          let content = `**${question}**\n${answer}`;
+        chat.ask(data.options[0].value).then( ({ prompt, result }) => {
+          let content = `**${prompt}**\n${result}`;
           if(content.length > 2000) {
             content = content.substring(0,2000);
           }

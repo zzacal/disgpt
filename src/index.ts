@@ -13,9 +13,12 @@ const OPEN_AI_API = new OpenAIApi(new Configuration({
 }));
 const CHAT_SERVICE = new AIService(OPEN_AI_API);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT ?? 3000;
 
-if (APPID && PUBLIC_KEY && DISCORD_BOT_TOKEN && OPENAI_API_KEY) {
+if (APPID != null
+    && PUBLIC_KEY != null
+    && DISCORD_BOT_TOKEN != null
+    && OPENAI_API_KEY != null) {
   (new ExpressAppBuilder())
     .build(CHAT_SERVICE, APPID, PUBLIC_KEY, DISCORD_BOT_TOKEN)
     .then( app => app.listen(PORT, () => console.log(`app: ${APPID}\nlistening: ${PORT}`)))
