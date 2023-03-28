@@ -1,6 +1,9 @@
 # Disgpt
 A Chat GPT Discord bot
 
+![sample-small-max](https://user-images.githubusercontent.com/54555150/228340161-2ff8da76-c2e5-4fb8-b8bc-da0f3de9e74e.gif)
+
+
 ## Invite disgpt to your discord server
 https://discord.com/api/oauth2/authorize?client_id=1089437295456829600&permissions=274877975552&scope=bot%20applications.commands
 
