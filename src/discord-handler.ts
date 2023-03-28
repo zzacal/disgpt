@@ -1,8 +1,8 @@
 import { InteractionResponseType, InteractionType } from "discord-interactions";
-import { ChatService } from "./chatgpt/chat-service";
+import { AIService } from "./ai/ai-service";
 import { DiscordRequest, getRandomEmoji } from "./utils";
 
-export async function HandleDiscordRequest(chat: ChatService, appId: string, botToken: string, interaction: Interaction): Promise<InteractionResponse | undefined> {
+export async function HandleDiscordRequest(chat: AIService, appId: string, botToken: string, interaction: Interaction): Promise<InteractionResponse | undefined> {
   // Interaction type and data
   const { type, token, data, member: {user: {display_name, username}} } = interaction;
 

@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { ALL_COMMANDS } from './commands';
 import { Builder } from './builder';
-import { ChatService } from './chatgpt/chat-service';
+import { AIService } from './ai/ai-service';
 import { Configuration, OpenAIApi } from 'openai';
 
 const APPID = process.env.APP_ID!;
@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 const OPEN_AI_API = new OpenAIApi(new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 }));
-const CHAT_SERVICE = new ChatService(OPEN_AI_API);
+const CHAT_SERVICE = new AIService(OPEN_AI_API);
 
 (new Builder())
   .build(CHAT_SERVICE, APPID, PUBLIC_KEY, DISCORD_BOT_TOKEN, ALL_COMMANDS)

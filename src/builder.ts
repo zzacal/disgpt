@@ -1,5 +1,5 @@
 import express, { Express } from "express";
-import { ChatService } from "./chatgpt/chat-service";
+import { AIService } from "./ai/ai-service";
 import { Command } from "./commands";
 import { HandleDiscordRequest } from "./discord-handler";
 import {
@@ -14,7 +14,7 @@ export class Builder {
   constructor() {}
 
   public build = async (
-    chatService: ChatService,
+    chatService: AIService,
     APPID: string,
     PUBLIC_KEY: string,
     DISCORD_BOT_TOKEN: string,

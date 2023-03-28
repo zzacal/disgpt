@@ -1,6 +1,6 @@
 import { OpenAIApi } from "openai";
 
-export class ChatService {
+export class AIService {
   constructor(private openai: OpenAIApi) {}
 
   async ask(prompt: string): Promise<string> {
