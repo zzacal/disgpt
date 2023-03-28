@@ -1,11 +1,6 @@
 import express, { Express } from "express";
 import { AIService } from "./ai/ai-service";
-import { Command } from "./commands";
-import { HandleDiscordRequest } from "./discord-handler";
-import {
-  InstallGlobalCommands,
-  VerifyDiscordRequest,
-} from "./utils";
+import { Command, HandleDiscordRequest, VerifyDiscordRequest } from "./discord";
 
 export class Builder {
   /**
@@ -17,8 +12,7 @@ export class Builder {
     chatService: AIService,
     APPID: string,
     PUBLIC_KEY: string,
-    DISCORD_BOT_TOKEN: string,
-    ALL_COMMANDS: Command[]
+    DISCORD_BOT_TOKEN: string
   ): Promise<Express> => {
     // Create an express app
     const app = express();

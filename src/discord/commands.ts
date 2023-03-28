@@ -1,19 +1,19 @@
-import { InstallGlobalCommands } from "./utils";
+import { DiscordRequest } from ".";
 
 export type Choice = {
   name: string,
   value: string
 };
 
-// 1 SUB_COMMAND
-// 2 SUB_COMMAND_GROUP
-// 3 STRING
-// 4 INTEGER            Any integer between -2^53 and 2^53
-// 5 BOOLEAN
-// 6 USER
-// 7 CHANNEL            Includes all channel types + categories
-// 8 ROLE	
-// 9 MENTIONABLE        Includes users and roles
+// 1  SUB_COMMAND
+// 2  SUB_COMMAND_GROUP
+// 3  STRING
+// 4  INTEGER            Any integer between -2^53 and 2^53
+// 5  BOOLEAN
+// 6  USER
+// 7  CHANNEL            Includes all channel types + categories
+// 8  ROLE	
+// 9  MENTIONABLE        Includes users and roles
 // 10 NUMBER            Any double between -2^53 and 2^53
 // 11 ATTACHMENT        attachment object
 export type CommandOptions = {
@@ -55,5 +55,16 @@ const CHALLENGE_COMMAND: Command = {
   type: 1,
 };
 
-
 export const ALL_COMMANDS = [TEST_COMMAND, CHALLENGE_COMMAND];
+
+export async function RegisterGlobalCommands(appId: string, discordBotToken: string, commands: Command[] = ALL_COMMANDS) {
+  // API endpoint to overwrite global commands
+  const endpoint = `applications/${appId}/commands`;
+
+  try {
+    // This is calling the bulk overwrite endpoint: https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-global-application-commands
+    await DiscordRequest(endpoint, discordBotToken, { method: 'PUT', body: commands });
+  } catch (err) {
+    console.error(err);
+  }
+}
