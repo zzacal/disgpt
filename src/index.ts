@@ -14,6 +14,6 @@ const CHAT_SERVICE = new AIService(OPEN_AI_API);
 
 const PORT = process.env.PORT || 3000;
 
-(new Builder())
-  .build(CHAT_SERVICE, APPID, PUBLIC_KEY, DISCORD_BOT_TOKEN)
-  .then( app => app.listen(PORT, () => console.log(`app: ${APPID}\nlistening: ${PORT}`)))
+  (new ExpressAppBuilder())
+    .build(CHAT_SERVICE, APPID, PUBLIC_KEY, DISCORD_BOT_TOKEN)
+    .then( app => app.listen(PORT, () => console.log(`app: ${APPID}\nlistening: ${PORT}`)))
