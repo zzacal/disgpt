@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { DiscordRequest } from ".";
 
 export type Choice = {
@@ -32,22 +33,24 @@ export type Command = {
   options?: CommandOptions[]
 };
 
+const cmdPrefix = process.env.COMMAND_PREFIX ?? "";
+
 // Simple test command
-const TEST_COMMAND: Command = {
-  name: 'test',
-  description: 'Basic command',
+export const TEST_COMMAND: Command = {
+  name: `${cmdPrefix}test`,
+  description: 'Poke the robot',
   type: 1,
 };
 
 // Command containing options
-const CHALLENGE_COMMAND: Command = {
-  name: 'askgpt',
+export const ASK_COMMAND: Command = {
+  name: `${cmdPrefix}askgpt`,
   description: 'Ask a question',
   options: [
     {
       type: 3,
       name: 'question',
-      description: 'Pick your object',
+      description: 'Ask Chat GPT',
       required: true,
       max_length: 1000
     },
@@ -55,16 +58,30 @@ const CHALLENGE_COMMAND: Command = {
   type: 1,
 };
 
-export const ALL_COMMANDS = [TEST_COMMAND, CHALLENGE_COMMAND];
+const ALL_COMMANDS = [TEST_COMMAND, ASK_COMMAND];
 
-export async function RegisterGlobalCommands(appId: string, discordBotToken: string, commands: Command[] = ALL_COMMANDS) {
+export async function RegisterGlobalCommands(appId: string, token: string, commands: Command[] = ALL_COMMANDS) {
   // API endpoint to overwrite global commands
   const endpoint = `applications/${appId}/commands`;
 
   try {
     // This is calling the bulk overwrite endpoint: https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-global-application-commands
-    await DiscordRequest(endpoint, discordBotToken, { method: 'PUT', body: commands });
+    await DiscordRequest(endpoint, token, { method: 'PUT', body: commands });
   } catch (err) {
     console.error(err);
+  }
+}
+
+export async function GetGlobalCommands(appId: string, token: string): Promise<Command[]> {
+  const endpoint = `applications/${appId}/commands`;  
+  try {
+    // This is calling the bulk overwrite endpoint: https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-global-application-commands
+    const response = await DiscordRequest(endpoint, token, { method: 'GET' });
+    const jsonres = await response.json();
+    console.log(jsonres);
+    return jsonres;
+  } catch (err) {
+    console.error(err);
+    return []
   }
 }

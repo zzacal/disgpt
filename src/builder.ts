@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import { AIService } from "./ai/ai-service";
-import { HandleDiscordRequest, VerifyDiscordRequest } from "./discord";
+import { GetGlobalCommands, HandleDiscordRequest, VerifyDiscordRequest } from "./discord";
 
 export class ExpressAppBuilder {
   public build = async (
@@ -27,6 +27,11 @@ export class ExpressAppBuilder {
     });
 
     app.get("/ping", (_req, res) => {res.sendStatus(200)});
+
+    app.get("/commands", async (_req, res) => {
+      const commands = await GetGlobalCommands(appId, discordBotToken);
+      res.send(commands.map(({name, description}) => ({name, description})));
+    });
 
     return app;
   };

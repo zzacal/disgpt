@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { ExpressAppBuilder } from './builder';
 import { AIService } from './ai/ai-service';
 import { Configuration, OpenAIApi } from 'openai';
+import { RegisterGlobalCommands } from './discord';
 
 const APPID = process.env.APP_ID;
 const PUBLIC_KEY = process.env.PUBLIC_KEY;
@@ -19,9 +20,20 @@ if (APPID != null
     && PUBLIC_KEY != null
     && DISCORD_BOT_TOKEN != null
     && OPENAI_API_KEY != null) {
+
+  if(process.env.REGISTER == "true")
+  {
+    console.info("Register commands started");
+    RegisterGlobalCommands(APPID, DISCORD_BOT_TOKEN)
+      .then( () => {
+        console.info("Register commands complete")
+      });
+  }
+      
   (new ExpressAppBuilder())
     .build(CHAT_SERVICE, APPID, PUBLIC_KEY, DISCORD_BOT_TOKEN)
     .then( app => app.listen(PORT, () => console.log(`app: ${APPID}\nlistening: ${PORT}`)))
+
 } else {
   throw new Error("disgpt is misconfigured.\nAPPID && PUBLIC_KEY && DISCORD_BOT_TOKEN && OPENAI_API_KEY are all required, but at least one is of them is missing.")
 }

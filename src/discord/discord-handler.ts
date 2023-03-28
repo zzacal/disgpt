@@ -1,6 +1,6 @@
 import { InteractionResponseType, InteractionType } from "discord-interactions";
 import { AIService } from "../ai/ai-service";
-import { DiscordRequest } from "./";
+import { ASK_COMMAND, DiscordRequest, TEST_COMMAND } from "./";
 import { Interaction, InteractionResponse } from "./interaction";
 
 export async function HandleDiscordRequest(chat: AIService, appId: string, botToken: string, interaction: Interaction): Promise<InteractionResponse | undefined> {
@@ -20,7 +20,7 @@ export async function HandleDiscordRequest(chat: AIService, appId: string, botTo
    */
   if (type === InteractionType.APPLICATION_COMMAND) {
     switch (data.name) {
-      case "test":
+      case TEST_COMMAND.name:
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -28,7 +28,7 @@ export async function HandleDiscordRequest(chat: AIService, appId: string, botTo
             content: "hello world " + getRandomEmoji(),
           },
         };
-      case "askgpt":
+      case ASK_COMMAND.name:
         chat.ask(data.options[0].value).then( ({ prompt, result }) => {
           let content = `**${prompt}**\n${result}`;
           if(content.length > 2000) {
