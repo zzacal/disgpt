@@ -1,6 +1,6 @@
 import { InteractionResponseType, InteractionType } from "discord-interactions";
 import { AIService } from "../ai/ai-service";
-import { ASK_COMMAND, DiscordRequest, TEST_COMMAND } from "./";
+import { ASK_COMMAND, DiscordRequest, DRAW_COMMAND, TEST_COMMAND } from "./";
 import { Interaction, InteractionResponse } from "./interaction";
 
 export async function HandleDiscordRequest(chat: AIService, appId: string, botToken: string, interaction: Interaction): Promise<InteractionResponse | undefined> {
@@ -47,6 +47,31 @@ export async function HandleDiscordRequest(chat: AIService, appId: string, botTo
           );
         })
 
+        return {
+          type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+        };
+
+      case DRAW_COMMAND.name:
+        chat.draw(data.options[0].value).then( ({ prompt, result }) => {
+          let content = `**${prompt}**`;
+
+          DiscordRequest(
+            `webhooks/${appId}/${token}`,
+            botToken,
+            {
+              method: "POST",
+              body: {
+                content,
+                embeds: [{
+                  "image": {
+                    "url": result
+                  }
+                }]
+              },
+            }
+          );
+        });
+        
         return {
           type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
         };

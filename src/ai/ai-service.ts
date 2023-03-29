@@ -23,6 +23,21 @@ export class AIService {
       };
     }
   }
+
+  async draw(prompt: string): Promise<AskResult> {
+    const response = await this.openai.createImage({
+      prompt,
+      n: 1,
+      size: "512x512",
+    })
+
+    console.log(prompt);
+    console.log(response.data.data);
+    return {
+      prompt,
+      result: response.data.data[0].url ?? ""
+    };
+  }
 }
 
 export type AskResult = {
