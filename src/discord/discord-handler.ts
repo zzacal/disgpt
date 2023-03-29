@@ -53,7 +53,7 @@ export async function HandleDiscordRequest(chat: AIService, appId: string, botTo
 
       case DRAW_COMMAND.name:
         chat.draw(data.options[0].value).then( ({ prompt, result }) => {
-          let content = `**${prompt}**`;
+          const content = `**${prompt}**`;
 
           DiscordRequest(
             `webhooks/${appId}/${token}`,
