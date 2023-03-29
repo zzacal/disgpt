@@ -58,7 +58,23 @@ export const ASK_COMMAND: Command = {
   type: 1,
 };
 
-const ALL_COMMANDS = [TEST_COMMAND, ASK_COMMAND];
+// Command containing options
+export const DRAW_COMMAND: Command = {
+  name: `${cmdPrefix}askdalle`,
+  description: 'Draw an image',
+  options: [
+    {
+      type: 3,
+      name: 'prompt',
+      description: 'Ask DALLE to draw',
+      required: true,
+      max_length: 500
+    },
+  ],
+  type: 1,
+};
+
+export const ALL_COMMANDS = [TEST_COMMAND, ASK_COMMAND, DRAW_COMMAND];
 
 export async function RegisterGlobalCommands(appId: string, token: string, commands: Command[] = ALL_COMMANDS) {
   // API endpoint to overwrite global commands
