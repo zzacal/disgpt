@@ -29,10 +29,7 @@ export class AIService {
       prompt,
       n: 1,
       size: "512x512",
-    })
-
-    console.log(prompt);
-    console.log(response.data.data);
+    });
     return {
       prompt,
       result: response.data.data[0].url ?? ""

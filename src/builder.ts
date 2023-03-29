@@ -1,9 +1,11 @@
 import express, { Express } from "express";
 import { AIService } from "./ai/ai-service";
 import { GetGlobalCommands, HandleDiscordRequest, VerifyDiscordRequest } from "./discord";
+import { Cooldowns } from "./limiter/cooldown";
 
 export class ExpressAppBuilder {
   public build = async (
+    cooldowns: Cooldowns,
     chatService: AIService,
     appId: string,
     publicKey: string,
@@ -19,7 +21,7 @@ export class ExpressAppBuilder {
      * Interactions endpoint URL where Discord will send HTTP requests
      */
     app.post("/interactions", async function (req, res) {
-      const result = await HandleDiscordRequest(chatService, appId, discordBotToken, req.body);
+      const result = await HandleDiscordRequest(cooldowns, chatService, appId, discordBotToken, req.body);
       if(result)
       {
         res.send(result);

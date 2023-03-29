@@ -94,7 +94,6 @@ export async function GetGlobalCommands(appId: string, token: string): Promise<C
     // This is calling the bulk overwrite endpoint: https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-global-application-commands
     const response = await DiscordRequest(endpoint, token, { method: 'GET' });
     const jsonres = await response.json();
-    console.log(jsonres);
     return jsonres;
   } catch (err) {
     console.error(err);
