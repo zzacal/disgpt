@@ -37,3 +37,13 @@ export async function DiscordRequest(endpoint: string, token: string, options: {
   // return original response
   return res;
 }
+
+export function segmentMessage(message: string, segmentLimit: number): string[] {
+  const segments: string[] = [];
+
+  for (let i = 0; i < message.length; i += segmentLimit) {
+    segments.push(message.slice(i, i + segmentLimit));
+  }
+
+  return segments;
+}
