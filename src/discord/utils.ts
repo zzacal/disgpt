@@ -13,7 +13,7 @@ export const VerifyDiscordRequest = (clientKey: string) => (req: Request, res: R
     }
   };
 
-export async function DiscordRequest(endpoint: string, token: string, options: {method: string, body?: object}) {
+export async function DiscordRequest<T>(endpoint: string, token: string, options: {method: string, body?: object}) {
   // append endpoint to root API URL
   const url = 'https://discord.com/api/v10/' + endpoint;
 
@@ -35,7 +35,7 @@ export async function DiscordRequest(endpoint: string, token: string, options: {
     throw new Error(JSON.stringify(data));
   }
   // return original response
-  return res;
+  return res.json() as T;
 }
 
 export function segmentMessage(message: string, segmentLimit: number): string[] {
@@ -43,6 +43,26 @@ export function segmentMessage(message: string, segmentLimit: number): string[] 
 
   for (let i = 0; i < message.length; i += segmentLimit) {
     segments.push(message.slice(i, i + segmentLimit));
+  }
+
+  return segments;
+}
+
+export function segmentMessageAtSpaces(message: string, segmentLimit: number): string[] {
+  const segments: string[] = [];
+
+  while (message.length > segmentLimit) {
+    let index = message.lastIndexOf(" ", segmentLimit);
+    if (index === -1) {
+      index = segmentLimit;
+    }
+    const segment = message.slice(0, index);
+    segments.push(segment);
+    message = message.slice(index + 1);
+  }
+
+  if (message.length > 0) {
+    segments.push(message);
   }
 
   return segments;

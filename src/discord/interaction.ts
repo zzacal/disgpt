@@ -11,7 +11,7 @@ export type Interaction = {
   guild_locale: string
   id: string
   locale: string
-  member: Member
+  member?: Member
   token: string
   type: number
   version: number

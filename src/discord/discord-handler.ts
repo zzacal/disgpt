@@ -1,13 +1,13 @@
 import { InteractionResponseType, InteractionType } from "discord-interactions";
 import { AIService } from "../ai/ai-service";
 import { Cooldowns } from "../limiter/cooldown";
-import { ASK_COMMAND, DiscordRequest, DRAW_COMMAND, TEST_COMMAND } from "./";
+import { ASK_COMMAND, DiscordClient, DiscordMessage, DiscordRequest, DRAW_COMMAND, segmentMessageAtSpaces, TEST_COMMAND } from "./";
 import { Interaction, InteractionResponse } from "./interaction";
 
-export async function HandleDiscordRequest(cooldowns: Cooldowns,chat: AIService, appId: string, botToken: string, interaction: Interaction): Promise<InteractionResponse | undefined> {
+export async function HandleDiscordRequest(client: DiscordClient,cooldowns: Cooldowns,chat: AIService, appId: string, botToken: string, interaction: Interaction): Promise<InteractionResponse | undefined> {
   // Interaction type and data
-  const { type, token, data, member: { user } } = interaction;
-
+  const { type, token, data, member } = interaction;
+  const user = member?.user;
   /**
    * Handle verification requests
    */
@@ -25,26 +25,30 @@ export async function HandleDiscordRequest(cooldowns: Cooldowns,chat: AIService,
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            content: getAd(user.display_name ?? user.username, cooldowns.get(user.id))
+            content: getAd(user?.display_name ?? user?.username ?? "", cooldowns.get(user?.id ?? ""))
           },
         };
       case ASK_COMMAND.name:
         chat.ask(data.options[0].value).then( ({ prompt, result }) => {
-          let content = `**${prompt}**\n${result}`;
-          if(content.length > 2000) {
-            content = content.substring(0,2000);
-          }
+          let contents = segmentMessageAtSpaces(`**${prompt}**\n${result}`, 2000);          
 
-          DiscordRequest(
+          DiscordRequest<DiscordMessage>(
             `webhooks/${appId}/${token}`,
             botToken,
             {
               method: "POST",
               body: {
-                content
+                content: contents[0]
               },
             }
-          );
+          ).then(async (message) => {
+            for(let i = 1; i < contents.length; i++){
+              client.createMessage(message.channel_id, {content: contents[i], message_reference: {
+                message_id: message.id,
+                channel_id: message.channel_id,
+                fail_if_not_exists: true}})
+            }
+          });
         })
 
         return {
@@ -52,11 +56,11 @@ export async function HandleDiscordRequest(cooldowns: Cooldowns,chat: AIService,
         };
 
       case DRAW_COMMAND.name:
-        if(cooldowns.get(user.id) > 0) {
+        if(cooldowns.get(user?.id ?? "") > 0) {
           return {
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
-              content: getAd(user.display_name ?? user.username, cooldowns.get(user.id))
+              content: getAd(user?.display_name ?? user?.username ?? "", cooldowns.get(user?.id ?? ""))
             }
           }
         }
@@ -79,7 +83,7 @@ export async function HandleDiscordRequest(cooldowns: Cooldowns,chat: AIService,
             }
           );
 
-          cooldowns.set(user.id);
+          cooldowns.set(user?.id ?? "");
         });
         
         return {

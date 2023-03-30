@@ -1,4 +1,4 @@
-class DiscordClient {
+export class DiscordClient {
   constructor(private apiBaseUrl: string, private token: string) {}
 
   // helper function to send requests to Discord API
@@ -40,6 +40,20 @@ class DiscordClient {
     );
     return response;
   }
+
+  async createMessage(channelId: Snowflake, params: MessageCreateParams): Promise<any> {
+    const url = `/channels/${channelId}/messages`;
+    const headers = {
+      'Authorization': `Bot ${process.env.DISCORD_BOT_TOKEN}`,
+      'Content-Type': 'application/json',
+    };
+    const body = JSON.stringify(params);
+    const response = await this.discordApiRequest(url, {
+      method: 'POST',
+      body,
+    });
+    return response;
+  }
 }
 
 interface CreateThreadOptions {
@@ -64,4 +78,92 @@ interface StartThreadInForumChannelOptions extends CreateThreadOptions {
     files?: any[];
   };
   applied_tags?: string[];
+}
+interface MessageCreateParams {
+  content?: string;
+  tts?: boolean;
+  embeds?: Embed[];
+  allowed_mentions?: AllowedMentions;
+  message_reference?: MessageReference;
+  components?: MessageComponent[];
+  sticker_ids?: Snowflake[];
+  files?: File[];
+  payload_json?: string;
+  attachments?: Attachment[];
+  flags?: number;
+}
+
+interface Embed {
+  title?: string;
+  description?: string;
+  // add other properties as needed
+}
+
+interface AllowedMentions {
+  // add properties as needed
+}
+
+interface MessageReference {
+  message_id?: Snowflake;
+  channel_id?: Snowflake;
+  guild_id?: Snowflake;
+  fail_if_not_exists?: boolean;
+}
+
+interface MessageComponent {
+  // add properties as needed
+}
+
+interface Attachment {
+  filename?: string;
+  description?: string;
+  // add other properties as needed
+}
+
+type Snowflake = string;
+
+export type DiscordMessage = {
+  id: string;
+  type: number;
+  content: string;
+  channel_id: string;
+  author: {
+    id: string;
+    username: string;
+    global_name: string | null;
+    display_name: string | null;
+    avatar: string;
+    avatar_decoration: string | null;
+    discriminator: string;
+    public_flags: number;
+    bot: boolean;
+  };
+  attachments: unknown[]; // not enough information provided to determine type
+  embeds: unknown[]; // not enough information provided to determine type
+  mentions: unknown[]; // not enough information provided to determine type
+  mention_roles: unknown[]; // not enough information provided to determine type
+  pinned: boolean;
+  mention_everyone: boolean;
+  tts: boolean;
+  timestamp: string;
+  edited_timestamp: string | null;
+  flags: number;
+  components: unknown[]; // not enough information provided to determine type
+  application_id: string;
+  interaction: {
+    id: string;
+    type: number;
+    name: string;
+    user: {
+      id: string;
+      username: string;
+      global_name: string | null;
+      display_name: string | null;
+      avatar: string;
+      avatar_decoration: string | null;
+      discriminator: string;
+      public_flags: number;
+    };
+  };
+  webhook_id: string;
 }
